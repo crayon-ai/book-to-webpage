@@ -1,6 +1,7 @@
 // Playwright 自动验证脚本
 // 用法: node scripts/verify-page.js <path-to-html>
-const { chromium } = require('/opt/homebrew/lib/node_modules/playwright');
+const { pathToFileURL } = require('node:url');
+const { launchBrowser } = require('./browser-launch');
 
 (async () => {
   const htmlPath = process.argv[2];
@@ -9,14 +10,15 @@ const { chromium } = require('/opt/homebrew/lib/node_modules/playwright');
     process.exit(1);
   }
 
-  const browser = await chromium.launch();
+  const { chromium } = require('playwright');
+  const browser = await launchBrowser(chromium);
   const page = await browser.newPage();
   const errors = [];
 
   page.on('pageerror', err => errors.push('❌ JS Error: ' + err.message));
 
   try {
-    await page.goto('file://' + require('path').resolve(htmlPath), { waitUntil: 'domcontentloaded' });
+    await page.goto(pathToFileURL(require('path').resolve(htmlPath)).href, { waitUntil: 'domcontentloaded' });
 
     // 1. 检查占位符残留
     const html = await page.content();
@@ -170,4 +172,7 @@ const { chromium } = require('/opt/homebrew/lib/node_modules/playwright');
 
   await browser.close();
   process.exit(errors.length > 0 ? 1 : 0);
-})();
+})().catch(error => {
+  console.error('❌ 验证失败: ' + error.message);
+  process.exitCode = 1;
+});

@@ -1,0 +1,11 @@
+{
+  "name": "book-to-webpage-verifier",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/browser-launch.test.js",
+    "test:integration": "node --test tests/verify-page.test.js"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": { "playwright": "1.64.0" }
+}

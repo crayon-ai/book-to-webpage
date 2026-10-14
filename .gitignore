@@ -3,3 +3,4 @@ __pycache__/
 .kb/
 book_skill_work/
 .DS_Store
+node_modules/

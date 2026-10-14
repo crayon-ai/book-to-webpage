@@ -343,8 +343,21 @@ HTML 页面**内置全部 6 套主题**（`warm-paper`/`minimal`/`dark`/`ink-was
 生成 HTML 后，**必须**运行验证脚本：
 
 ```bash
-node ~/.claude/skills/book-to-webpage/scripts/verify-page.js <输出文件路径>
+node <book-to-webpage-skill-directory>/scripts/verify-page.js <输出文件路径>
 ```
+
+验证器依赖 Skill 根目录的固定版本 `playwright`（Node.js >=20）。首次使用，在实际安装的 Skill 目录运行：
+
+```bash
+cd <book-to-webpage-skill-directory>
+npm ci
+npx playwright install chromium
+node scripts/verify-page.js <输出文件路径>
+```
+
+默认使用该 Playwright 版本配套的完整 Chromium（`channel: chromium`，new headless）；如果配套 executable 尚未安装，尝试已安装的 Google Chrome（`channel: chrome`）。没有可用浏览器时以非零状态退出并提示安装方式。可以用 `PLAYWRIGHT_CHANNEL=chrome` 选择 Chrome，或用 `PLAYWRIGHT_EXECUTABLE_PATH=/path/to/browser` 指定 executable；两者互斥，显式选择失败时不会静默改用其他浏览器。自定义 executable 的版本兼容性由调用者负责。依赖从脚本所在目录正常解析，不依赖 Homebrew/NVM 的 global package 路径。
+
+开发验证：`npm test` 检查浏览器选择与失败路径；`npm run test:integration` 用真实浏览器检查最小 HTML fixture、点击、pageerror、responsive 与出处检查。只安装 Chrome 时可直接运行后者而不下载 Chromium。
 
 该脚本自动检查：占位符残留、Tab 切换、Causal Chain、Type Selector、Accordion、Timeline、Before/After、Story Card、Quote Card、Questions、Source Toggle、移动端响应式、data-source 属性。
 

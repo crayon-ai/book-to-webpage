@@ -1,0 +1,15 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0} @media(max-width:520px){body{font-size:14px}}</style>
+<body data-theme="minimal">
+<button class="tab" aria-selected="true" onclick="selectTab(this)">First</button>
+<button class="tab" aria-selected="false" onclick="selectTab(this)">Second</button>
+<button id="srcToggle" onclick="document.body.classList.toggle('show-sources')">Sources</button>
+<p data-source="第1章">Fixture content</p>
+<script>
+function selectTab(button) {
+  document.querySelectorAll('.tab').forEach(function(tab) { tab.setAttribute('aria-selected', String(tab === button)); });
+}
+</script>
+</body>
